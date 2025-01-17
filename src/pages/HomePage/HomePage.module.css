@@ -1,39 +1,89 @@
-.container {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url('/hero-bg.jpg') center/cover no-repeat;
+.main {
+  min-height: calc(100vh - 72px);
 }
 
 .hero {
-  text-align: center;
-  color: white;
-  padding: 2rem;
+  min-height: calc(100vh - 72px);
+  background-image: 
+    linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+    url('../../images/hero/hero.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  padding: 0 64px;
+}
+
+@media (min-device-pixel-ratio: 2),
+(min-resolution: 192dpi) {
+  .hero {
+    background-image: 
+      linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+      url('../../images/hero/hero-2x.jpg');
+  }
+}
+
+@supports (background-image: -webkit-image-set(url('') 1x)) {
+  .hero {
+    background-image: 
+      linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)),
+      -webkit-image-set(
+        url('../../images/hero/hero.webp') 1x,
+        url('../../images/hero/hero-2x.webp') 2x
+      );
+  }
+}
+
+.container {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.textContainer{
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .title {
-  font-size: 3.5rem;
-  margin-bottom: 1rem;
+  font-weight: 600;
+  font-size: 48px;
+  line-height: 0.67;
+  color: var(--inputs);
 }
 
 .subtitle {
-  font-size: 1.5rem;
-  margin-bottom: 2rem;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.33;
+  color: var(--inputs);
 }
 
 .ctaButton {
-  display: inline-block;
-  padding: 1rem 2rem;
-  background-color: #ff385c;
-  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 10px;
+  border-radius: 200px;
+  padding: 16px 60px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: var(--white);
   text-decoration: none;
-  border-radius: 8px;
-  font-size: 1.2rem;
+  background: var(--button);
   transition: background-color 0.3s ease;
 }
 
-.ctaButton:hover {
-  background-color: #e61e4d;
+.ctaButton:hover,
+.ctaButton:focus {
+  background: var(--button-hover);
 }
