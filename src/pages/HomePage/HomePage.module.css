@@ -71,6 +71,7 @@
   justify-content: center;
   flex-direction: row;
   gap: 10px;
+  border: none;
   border-radius: 200px;
   padding: 16px 60px;
   font-weight: 500;

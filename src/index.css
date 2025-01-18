@@ -6,7 +6,6 @@
   --text-color: #121417;
   --text-secondary: #8a8a89;
   --background-light: #f7f7f7;
-  --white: #ffffff;
   --main: #101828;
   --text: #475467;
   --white: #fff;
@@ -30,7 +29,7 @@
 body {
   font-family: 'Inter', sans-serif;
   line-height: 1.5;
-  color: var(--text-color);
+  color: var(--main);
 }
 
 img {
@@ -42,4 +41,11 @@ img {
 button {
   cursor: pointer;
   font-family: inherit;
+}
+
+p {
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--gray);
 }

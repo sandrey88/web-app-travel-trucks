@@ -1,108 +1,163 @@
 .filters {
+  display: flex;
+  flex-direction: column;
+  width: 360px;
+  gap: 40px;
   background: var(--white);
-  padding: 1.5rem;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .searchBar {
-  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 18px;
+  width: 20px;
+  height: 20px;
+  fill: var(--gray);
 }
 
 .searchInput {
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
+  padding: 18px 18px 14px 46px;
+  border: none;
+  border-radius: 12px;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--gray);
+  background: var(--inputs);
+  transition: all 0.3s ease;
 }
 
 .searchInput:focus {
   outline: none;
-  border-color: var(--primary-color);
+  color: var(--main);
 }
 
-.section {
-  margin-bottom: 1.5rem;
+.inputWrapper:focus-within .inputIcon {
+  fill: var(--main);
+}
+
+.sectionFilters {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.filterTitle {
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.sectionFilter {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .sectionTitle {
-  font-size: 1.125rem;
   font-weight: 600;
-  margin-bottom: 1rem;
-  color: var(--text-color);
+  font-size: 20px;
+  line-height: 1.2;
+  color: var(--main);
 }
 
-.vehicleTypes {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 0.5rem;
+.features, .vehicleTypes {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  flex-direction: row;
+  gap: 12px;
+  border-top: 1px solid var(--gray-light);
+  padding-top: 24.5px;
+  margin-top: -0.5px;
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+  fill: var(--main);
+  flex-shrink: 0;
 }
 
 .typeButton {
-  padding: 0.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  align-items: center;
+  width: 112px;
+  height: 96px;
   background: transparent;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--gray-light);
   border-radius: 8px;
-  font-size: 0.875rem;
-  color: var(--text-color);
-  transition: all 0.3s ease;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  text-align: center;
+  color: var(--main);
+  cursor: pointer;
+  transition: border 0.3s ease;
 }
 
-.typeButton:hover {
-  border-color: var(--primary-color);
-  color: var(--primary-color);
+.typeButton:hover, .typeButton:focus {
+  border-color: var(--button);
 }
 
 .typeButton.active {
-  background: var(--primary-color);
-  border-color: var(--primary-color);
-  color: var(--white);
-}
-
-.features {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 0.75rem;
-}
-
-.feature {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
+  border-color: var(--button-hover);
 }
 
 .feature input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  border: 2px solid #e0e0e0;
-  border-radius: 4px;
+  width: 16px;
+  height: 16px;
+  margin: 0;
   cursor: pointer;
-}
-
-.feature input[type="checkbox"]:checked {
-  accent-color: var(--primary-color);
 }
 
 .feature span {
   font-size: 0.875rem;
-  color: var(--text-color);
+  color: var(--main);
 }
 
 .resetButton {
-  width: 100%;
-  padding: 0.75rem;
-  background: transparent;
-  border: 1px solid var(--primary-color);
-  color: var(--primary-color);
-  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  border: none;
+  border-radius: 200px;
+  padding: 16px 60px;
   font-weight: 500;
-  transition: all 0.3s ease;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: var(--white);
+  text-decoration: none;
+  background: var(--button);
+  transition: background-color 0.3s ease;
 }
 
 .resetButton:hover {
-  background: var(--primary-color);
-  color: var(--white);
+  background: var(--button-hover);
 }
