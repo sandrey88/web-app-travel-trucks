@@ -1,5 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleFavorite } from '../../redux/slices/favoritesSlice';
+import sprite from '../../images/icons.svg';
+import { features } from '../Filters/Filters';
 import styles from './CamperCard.module.css';
 
 const CamperCard = ({ camper }) => {
@@ -38,85 +40,60 @@ const CamperCard = ({ camper }) => {
           className={styles.image}
           onError={(e) => {
             console.error('Image load error:', e);
-            e.target.src = 'fallback-image-url.jpg'; // Додайте URL для fallback зображення
+            e.target.src = '../../images/fallback-image.svg';
           }}
         />
-        <button
-          className={`${styles.favoriteButton} ${isFavorite ? styles.active : ''}`}
-          onClick={handleFavoriteClick}
-          aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24">
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-          </svg>
-        </button>
       </div>
 
       <div className={styles.content}>
         <div className={styles.header}>
           <div className={styles.titleRow}>
             <h2 className={styles.title}>{camper.name}</h2>
-            <p className={styles.price}>${formatPrice(camper.price)}</p>
+            <div className={styles.priceAndFavorite}>
+              <p className={styles.price}>${formatPrice(camper.price)}</p>
+              <button className={`${styles.favoriteButton} ${isFavorite ? styles.active : ''}`} onClick={handleFavoriteClick} aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}>
+                <svg className={styles.favoriteIcon}>
+                  <use href={`${sprite}#icon-heart`} />
+                </svg>
+              </button>
+            </div>
           </div>
-          <div className={styles.location}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-            </svg>
-            <span>{camper.location}</span>
+          <div className={styles.reviewsAndLocation}>
+            <div className={styles.reviews}>
+              <svg className={styles.starIcon}>
+                <use href={`${sprite}#icon-star`} />
+              </svg>
+              <span>{camper.rating}</span>
+            </div>
+            <div className={styles.location}>
+              <svg className={styles.mapIcon}>
+                <use href={`${sprite}#icon-map`} />
+              </svg>
+              <span>{camper.location}</span>
+            </div>
           </div>
         </div>
 
-        <div className={styles.details}>
-          <div className={styles.detailsRow}>
-            <div className={styles.detail}>
-              <span className={styles.label}>Form:</span>
-              <span className={styles.value}>
-                {camper.form.charAt(0).toUpperCase() + camper.form.slice(1)}
-              </span>
-            </div>
-            <div className={styles.detail}>
-              <span className={styles.label}>Length:</span>
-              <span className={styles.value}>{camper.length}</span>
-            </div>
-          </div>
-          <div className={styles.detailsRow}>
-            <div className={styles.detail}>
-              <span className={styles.label}>Width:</span>
-              <span className={styles.value}>{camper.width}</span>
-            </div>
-            <div className={styles.detail}>
-              <span className={styles.label}>Height:</span>
-              <span className={styles.value}>{camper.height}</span>
-            </div>
-          </div>
-        </div>
+        <p className={styles.description}>{camper.description}</p>
 
         <div className={styles.features}>
-          {camper.AC && (
-            <div className={styles.feature}>
-              <span>AC</span>
-            </div>
-          )}
-          {camper.transmission === 'automatic' && (
-            <div className={styles.feature}>
-              <span>Automatic</span>
-            </div>
-          )}
-          {camper.kitchen && (
-            <div className={styles.feature}>
-              <span>Kitchen</span>
-            </div>
-          )}
-          {camper.TV && (
-            <div className={styles.feature}>
-              <span>TV</span>
-            </div>
-          )}
-          {camper.bathroom && (
-            <div className={styles.feature}>
-              <span>Bathroom</span>
-            </div>
-          )}
+          {features.map(({ id, label, icon }) => {
+            // Перевіряємо, чи ця функція доступна для поточного camper
+            const isFeatureAvailable = id === 'automatic'
+              ? camper.transmission === 'automatic' // Спеціальна перевірка для автоматичної коробки передач
+              : camper[id]; // Загальна перевірка для решти features
+
+            if (!isFeatureAvailable) return null; // Якщо функція недоступна, не рендеримо її
+
+            return (
+              <div className={styles.feature} key={id}>
+                <svg className={styles.icon}>
+                  <use href={`${sprite}#${icon}`} />
+                </svg>
+                <span>{label}</span>
+              </div>
+            );
+          })}
         </div>
 
         <button onClick={handleShowMore} className={styles.showMoreButton}>

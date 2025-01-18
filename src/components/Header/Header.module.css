@@ -12,7 +12,7 @@
   gap: 450px;
   border-bottom: 1px solid var(--badges);
   padding: 24px 64px;
-  width: 1440px;
+  max-width: 1440px;
   height: 72px;
   background: var(--inputs);
 }

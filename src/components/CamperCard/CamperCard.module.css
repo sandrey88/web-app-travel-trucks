@@ -1,19 +1,24 @@
 .card {
-  background: #FFFFFF;
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  border: 1px solid var(--gray-light);
   border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease-in-out;
-}
-
-.card:hover {
-  transform: translateY(-4px);
+  padding: 24px;
+  background: var(--white);
+  max-width: 760px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .imageWrapper {
-  position: relative;
+  display: block;
+  border-radius: 10px;
+  max-width: 292px;
   width: 100%;
-  height: 248px;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .image {
@@ -22,132 +27,201 @@
   object-fit: cover;
 }
 
-.favoriteButton {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.8);
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background-color 0.2s ease;
-}
-
-.favoriteButton svg {
-  fill: none;
-  stroke: #161616;
-  stroke-width: 2;
-  transition: fill 0.2s ease;
-}
-
-.favoriteButton.active svg {
-  fill: #E44848;
-  stroke: #E44848;
-}
-
 .content {
-  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: calc(100% - 292px - 24px);
+  width: 100%;
 }
 
 .header {
-  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .titleRow {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   margin-bottom: 8px;
+  flex-wrap: wrap;
 }
 
 .title {
-  font-size: 24px;
   font-weight: 600;
-  color: #161616;
-  margin: 0;
+  font-size: 24px;
+  line-height: 1.33;
+  color: var(--main);
+  max-width: 50%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.priceAndFavorite {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 12px;
 }
 
 .price {
-  font-size: 24px;
   font-weight: 600;
-  color: #161616;
-  margin: 0;
+  font-size: 24px;
+  line-height: 1.33;
+  color: var(--main);
 }
 
-.location {
+.favoriteButton {
+  width: 26px;
+  height: 24px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
-  color: #161616;
-  font-size: 16px;
+  justify-content: center;
+  background-color: transparent;
 }
 
-.location svg {
-  color: #161616;
+.favoriteButton svg {
+  fill: var(--main);
+  transition: fill 0.3s ease;
 }
 
-.details {
-  margin-bottom: 24px;
+.favoriteButton:hover svg {
+  fill: var(--button-hover);
 }
 
-.detailsRow {
+.favoriteButton.active svg {
+  fill: var(--button);
+}
+
+.reviewsAndLocation {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 8px;
+  align-items: center;
+  gap: 16px;
 }
 
-.detailsRow:last-child {
-  margin-bottom: 0;
-}
-
-.detail {
+.reviews, .location {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  gap: 4px;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--main);
 }
 
-.label {
-  color: #12141780;
-  font-size: 16px;
+.reviews span {
+  text-decoration: underline;
+  text-decoration-skip-ink: none;
 }
 
-.value {
-  color: #121417;
+.starIcon {
+  width: 16px;
+  height: 16px;
+  fill: var(--rating);
+}
+
+.mapIcon {
+  width: 16px;
+  height: 16px;
+  fill: var(--main);
+}
+
+.description {
+  font-weight: 400;
   font-size: 16px;
+  line-height: 1.5;
+  color: var(--text);
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .features {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 24px;
 }
 
 .feature {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 8px;
   padding: 12px 18px;
-  background: #F9F9F9;
   border-radius: 100px;
   font-size: 16px;
-  color: #121417;
+  color: var(--main);
+  background: var(--badges);
+  box-sizing: border-box;
+}
+
+.feature .icon {
+  width: 20px;
+  height: 20px;
+  fill: var(--main);
 }
 
 .showMoreButton {
-  width: 100%;
-  padding: 16px;
-  background: #E44848;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
   border: none;
   border-radius: 200px;
-  color: white;
-  font-size: 16px;
+  padding: 16px 60px;
   font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: var(--white);
+  text-decoration: none;
+  background: var(--button);
+  transition: background-color 0.3s ease;
 }
 
 .showMoreButton:hover {
-  background: #D14343;
+  background: var(--button-hover);
+}
+
+@media screen and (min-width: 1300px) {
+  .card {
+    max-width: 792px;
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 1340px) {
+  .card {
+    max-width: 822px;
+    width: 100%;
+  }
+  .title {
+    max-width: 60%;
+  }
+}
+
+@media screen and (min-width: 1380px) {
+  .card {
+    max-width: 862px;
+    width: 100%;
+  }
+}
+
+@media screen and (min-width: 1400px) {
+  .card {
+    max-width: 888px;
+    width: 100%;
+  }
+  .title {
+    max-width: 65%;
+  }
 }
