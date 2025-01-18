@@ -64,11 +64,35 @@ const Filters = () => {
       <div className={styles.sectionFilters}>
         <p className={styles.filterTitle}>Filters</p>
 
-        <div className={styles.sectionFilter}>
+        {/* <div className={styles.sectionFilter}>
           <h3 className={styles.sectionTitle}>Vehicle equipment</h3>
           <div className={styles.features}>
             {features.map(({ id, label, icon }) => (
               <label key={id} className={styles.feature}>
+                <input
+                  type="checkbox"
+                  checked={filters.features[id]}
+                  onChange={() => handleFeatureToggle(id)}
+                />
+                <svg className={styles.icon}>
+                  <use href={`${sprite}#${icon}`} />
+                </svg>
+                <span>{label}</span>
+              </label>
+            ))}
+          </div>
+        </div> */}
+
+        <div className={styles.sectionFilter}>
+          <h3 className={styles.sectionTitle}>Vehicle equipment</h3>
+          <div className={styles.features}>
+            {features.map(({ id, label, icon }) => (
+              <label
+                key={id}
+                className={`${styles.feature} ${
+                  filters.features[id] ? styles.active : ''
+                }`}
+              >
                 <input
                   type="checkbox"
                   checked={filters.features[id]}

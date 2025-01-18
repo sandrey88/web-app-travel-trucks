@@ -86,10 +86,57 @@
   align-items: flex-end;
   justify-content: flex-start;
   flex-direction: row;
+  flex-wrap: wrap;
   gap: 12px;
   border-top: 1px solid var(--gray-light);
   padding-top: 24.5px;
   margin-top: -0.5px;
+}
+
+.feature {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+  align-items: center;
+  width: 112px;
+  height: 96px;
+  background: transparent;
+  border: 1px solid var(--gray-light);
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  text-align: center;
+  color: var(--main);
+  cursor: pointer;
+  transition: border 0.3s ease;
+}
+
+.feature:hover,
+.feature:focus-within {
+  border-color: var(--button);
+}
+
+.feature.active {
+  border-color: var(--button-hover);
+}
+
+.feature input[type="checkbox"] {
+  display: none;
+}
+
+.feature span {
+  font-size: 1rem;
+  color: var(--main);
+}
+
+.feature .icon {
+  width: 32px;
+  height: 32px;
+  fill: var(--main);
+  flex-shrink: 0;
 }
 
 .icon {
@@ -127,7 +174,7 @@
 .typeButton.active {
   border-color: var(--button-hover);
 }
-
+/* 
 .feature input[type="checkbox"] {
   width: 16px;
   height: 16px;
@@ -138,7 +185,7 @@
 .feature span {
   font-size: 0.875rem;
   color: var(--main);
-}
+} */
 
 .resetButton {
   display: flex;
