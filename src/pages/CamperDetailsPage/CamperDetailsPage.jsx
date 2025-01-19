@@ -3,6 +3,9 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCamperById } from '../../redux/slices/campersSlice';
 import Header from '../../components/Header/Header';
+import sprite from '../../images/icons.svg';
+import { formatPrice } from '../../components/CamperCard/Price';
+import { features } from '../../components/Filters/Feachers';
 import Gallery from '../../components/Gallery/Gallery';
 import Reviews from '../../components/Reviews/Reviews';
 import BookingForm from '../../components/BookingForm/BookingForm';
@@ -57,82 +60,108 @@ const CamperDetailsPage = () => {
       <Header />
       <main className={styles.main}>
         <div className={styles.container}>
+
           <div className={styles.content}>
+            <div className={styles.header}>
+              <h1 className={styles.title}>{camper.name}</h1>
+              <div className={styles.infoHeader}>
+                <div className={styles.reviewsAndLocation}>
+                  <div className={styles.reviews}>
+                    <svg className={styles.starIcon}>
+                      <use href={`${sprite}#icon-star`} />
+                    </svg>
+                    {camper.reviews && camper.reviews.length > 0 && (
+                      <span>
+                        {camper.rating}({camper.reviews.length}{' '}
+                        {camper.reviews.length === 1 ? 'Review' : 'Reviews'})
+                      </span>
+                    )}
+                  </div>
+                  <div className={styles.location}>
+                    <svg className={styles.mapIcon}>
+                      <use href={`${sprite}#icon-map`} />
+                    </svg>
+                    <span>{camper.location}</span>
+                  </div>
+                </div>
+                <p className={styles.price}>${formatPrice(camper.price)}</p>
+              </div>
+            </div>
             <Gallery images={camper.gallery} />
-            
-            <div className={styles.details}>
-              <div className={styles.header}>
-                <h1 className={styles.title}>{camper.name}</h1>
-                <div className={styles.location}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-                  </svg>
-                  <span>{camper.location}</span>
-                </div>
-              </div>
-
-              <div className={styles.specifications}>
-                <h2 className={styles.sectionTitle}>Specifications</h2>
-                <div className={styles.specGrid}>
-                  <div className={styles.specItem}>
-                    <span className={styles.specLabel}>Form:</span>
-                    <span className={styles.specValue}>{camper.form}</span>
-                  </div>
-                  <div className={styles.specItem}>
-                    <span className={styles.specLabel}>Length:</span>
-                    <span className={styles.specValue}>{camper.length}</span>
-                  </div>
-                  <div className={styles.specItem}>
-                    <span className={styles.specLabel}>Width:</span>
-                    <span className={styles.specValue}>{camper.width}</span>
-                  </div>
-                  <div className={styles.specItem}>
-                    <span className={styles.specLabel}>Height:</span>
-                    <span className={styles.specValue}>{camper.height}</span>
-                  </div>
-                  <div className={styles.specItem}>
-                    <span className={styles.specLabel}>Tank:</span>
-                    <span className={styles.specValue}>{camper.tank}</span>
-                  </div>
-                  <div className={styles.specItem}>
-                    <span className={styles.specLabel}>Consumption:</span>
-                    <span className={styles.specValue}>{camper.consumption}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className={styles.features}>
-                <h2 className={styles.sectionTitle}>Features</h2>
-                <div className={styles.featuresList}>
-                  {camper.AC && <div className={styles.feature}>AC</div>}
-                  {camper.transmission === 'automatic' && (
-                    <div className={styles.feature}>Automatic</div>
-                  )}
-                  {camper.kitchen && <div className={styles.feature}>Kitchen</div>}
-                  {camper.TV && <div className={styles.feature}>TV</div>}
-                  {camper.bathroom && <div className={styles.feature}>Bathroom</div>}
-                  {camper.radio && <div className={styles.feature}>Radio</div>}
-                  {camper.refrigerator && (
-                    <div className={styles.feature}>Refrigerator</div>
-                  )}
-                  {camper.microwave && <div className={styles.feature}>Microwave</div>}
-                  {camper.gas && <div className={styles.feature}>Gas</div>}
-                  {camper.water && <div className={styles.feature}>Water</div>}
-                </div>
-              </div>
-
-              <div className={styles.description}>
-                <h2 className={styles.sectionTitle}>Description</h2>
-                <p>{camper.description}</p>
-              </div>
-
-              <Reviews reviews={camper.reviews} />
+            <div className={styles.description}>
+              <p>{camper.description}</p>
             </div>
           </div>
 
-          <aside className={styles.sidebar}>
+          <div className={styles.containerTabs}>
+            <div className={styles.tabs}>
+              <ul className={styles.tabsList}>
+                <li>Features</li>
+                <li>Reviews</li>
+              </ul>
+            </div>
+            <div className={styles.tabsContent}>
+              <div className={styles.allFeatures}>
+                <div className={styles.features}>
+                  {features.map(({ id, label, icon }) => {
+                    // Перевіряємо, чи ця функція доступна для поточного camper
+                    const isFeatureAvailable = id === 'automatic'
+                      ? camper.transmission === 'automatic' // Спеціальна перевірка для автоматичної коробки передач
+                      : camper[id]; // Загальна перевірка для решти features
+
+                    if (!isFeatureAvailable) return null; // Якщо функція недоступна, не рендеримо її
+
+                    return (
+                      <div className={styles.feature} key={id}>
+                        <svg className={styles.icon}>
+                          <use href={`${sprite}#${icon}`} />
+                        </svg>
+                        <span>{label}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className={styles.specifications}>
+                  <h3 className={styles.sectionTitle}>Vehicle details</h3>
+                  <div className={styles.specGrid}>
+                    <div className={styles.specItem}>
+                      <span className={styles.specLabel}>Form:</span>
+                      <span className={styles.specValue}>{camper.form}</span>
+                    </div>
+                    <div className={styles.specItem}>
+                      <span className={styles.specLabel}>Length:</span>
+                      <span className={styles.specValue}>{camper.length}</span>
+                    </div>
+                    <div className={styles.specItem}>
+                      <span className={styles.specLabel}>Width:</span>
+                      <span className={styles.specValue}>{camper.width}</span>
+                    </div>
+                    <div className={styles.specItem}>
+                      <span className={styles.specLabel}>Height:</span>
+                      <span className={styles.specValue}>{camper.height}</span>
+                    </div>
+                    <div className={styles.specItem}>
+                      <span className={styles.specLabel}>Tank:</span>
+                      <span className={styles.specValue}>{camper.tank}</span>
+                    </div>
+                    <div className={styles.specItem}>
+                      <span className={styles.specLabel}>Consumption:</span>
+                      <span className={styles.specValue}>{camper.consumption}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className={styles.form}>
+                <BookingForm onSubmit={handleBookingSubmit} price={camper.price} />
+              </div>
+            </div>
+          </div>
+         
+          <Reviews reviews={camper.reviews} />
+
+          {/* <aside className={styles.sidebar}>
             <BookingForm onSubmit={handleBookingSubmit} price={camper.price} />
-          </aside>
+          </aside> */}
         </div>
       </main>
     </>

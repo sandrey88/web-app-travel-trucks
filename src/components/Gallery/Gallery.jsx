@@ -14,11 +14,13 @@ const Gallery = ({ images }) => {
     setIsModalOpen(false);
   };
 
-  const handlePrevImage = () => {
+  const handlePrevImage = (e) => {
+    e.stopPropagation();
     setSelectedImage((prev) => (prev === 0 ? images.length - 1 : prev - 1));
   };
 
-  const handleNextImage = () => {
+  const handleNextImage = (e) => {
+    e.stopPropagation();
     setSelectedImage((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };
 
@@ -26,41 +28,49 @@ const Gallery = ({ images }) => {
     return null;
   }
 
+  // Показуємо максимум 4 зображення
+  const displayImages = images.slice(0, 4);
+
   return (
     <div className={styles.gallery}>
-      <div className={styles.mainImage}>
-        <img
-          src={images[0].original}
-          alt="Main view"
-          onClick={() => handleImageClick(0)}
-        />
-      </div>
-      <div className={styles.thumbnails}>
-        {images.slice(1).map((image, index) => (
-          <div
-            key={index + 1}
-            className={styles.thumbnail}
-            onClick={() => handleImageClick(index + 1)}
-          >
-            <img src={image.thumb} alt={`Thumbnail ${index + 1}`} />
-          </div>
-        ))}
-      </div>
+      {displayImages.map((image, index) => (
+        <div
+          key={index}
+          className={styles.imageContainer}
+          onClick={() => handleImageClick(index)}
+        >
+          <img 
+            src={image.original} 
+            alt={`Gallery image ${index + 1}`}
+            className={styles.image}
+          />
+        </div>
+      ))}
 
       {isModalOpen && (
         <div className={styles.modal} onClick={handleCloseModal}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <button className={styles.closeButton} onClick={handleCloseModal}>
+            <button 
+              className={`${styles.modalButton} ${styles.closeButton}`} 
+              onClick={handleCloseModal}
+            >
               ×
             </button>
-            <button className={styles.navButton} onClick={handlePrevImage}>
+            <button 
+              className={`${styles.modalButton} ${styles.prevButton}`} 
+              onClick={handlePrevImage}
+            >
               ‹
             </button>
             <img
               src={images[selectedImage].original}
-              alt={`Image ${selectedImage + 1}`}
+              alt={`Full size image ${selectedImage + 1}`}
+              className={styles.modalImage}
             />
-            <button className={styles.navButton} onClick={handleNextImage}>
+            <button 
+              className={`${styles.modalButton} ${styles.nextButton}`} 
+              onClick={handleNextImage}
+            >
               ›
             </button>
           </div>

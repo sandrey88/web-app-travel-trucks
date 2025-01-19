@@ -1,22 +1,28 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import styles from './BookingForm.module.css';
 
-const BookingForm = ({ onSubmit, price }) => {
+const BookingForm = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
-    startDate: '',
-    endDate: '',
     name: '',
     email: '',
-    phone: '',
+    date: '',
     comment: ''
   });
 
+  const dateInputRef = useRef(null);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value
     }));
+  };
+
+  const handleDateFocus = () => {
+    if (dateInputRef.current) {
+      dateInputRef.current.showPicker(); // Відкриває календар
+    }
   };
 
   const handleSubmit = (e) => {
@@ -24,111 +30,76 @@ const BookingForm = ({ onSubmit, price }) => {
     onSubmit(formData);
   };
 
-  const calculateTotalPrice = () => {
-    if (!formData.startDate || !formData.endDate) return price;
-    
-    const start = new Date(formData.startDate);
-    const end = new Date(formData.endDate);
-    const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
-    return price * days;
-  };
-
   return (
     <div className={styles.bookingForm}>
-      <h2 className={styles.title}>Booking</h2>
-      <form onSubmit={handleSubmit}>
-        <div className={styles.priceInfo}>
-          <span className={styles.priceLabel}>Price:</span>
-          <span className={styles.priceValue}>${price.toFixed(2)}/day</span>
-        </div>
-
-        <div className={styles.dateInputs}>
+      <div className={styles.formTitle}>
+        <p className={styles.titleText}>Book your campervan now</p>
+        <p className={styles.subText}>Stay connected! We are always ready to help you.</p>
+      </div>
+      <form className={styles.form} onSubmit={handleSubmit}>
+        <div className={styles.inputGroups}>
           <div className={styles.inputGroup}>
-            <label htmlFor="startDate">Start date</label>
             <input
-              type="date"
-              id="startDate"
-              name="startDate"
-              value={formData.startDate}
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
               onChange={handleChange}
               required
-              min={new Date().toISOString().split('T')[0]}
+              placeholder="Name*"
             />
           </div>
+
           <div className={styles.inputGroup}>
-            <label htmlFor="endDate">End date</label>
             <input
-              type="date"
-              id="endDate"
-              name="endDate"
-              value={formData.endDate}
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
               onChange={handleChange}
               required
-              min={formData.startDate || new Date().toISOString().split('T')[0]}
+              placeholder="Email*"
             />
           </div>
-        </div>
 
-        <div className={styles.inputGroup}>
-          <label htmlFor="name">Name</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            required
-            placeholder="Your name"
-          />
-        </div>
+          <div className={styles.inputGroup}>
+            <input
+              type="text"
+              id="date"
+              name="date"
+              value={formData.date}
+              onFocus={handleDateFocus}
+              onChange={handleChange}
+              required
+              placeholder="Booking date*"
+              className={styles.dateInput}
+            />
+            <input
+              type="date"
+              ref={dateInputRef}
+              style={{ display: 'none' }}
+              onChange={(e) => {
+                handleChange(e);
+                dateInputRef.current.blur(); // Закриває календар після вибору
+              }}
+              name="date"
+            />
+          </div>
 
-        <div className={styles.inputGroup}>
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-            placeholder="Your email"
-          />
-        </div>
-
-        <div className={styles.inputGroup}>
-          <label htmlFor="phone">Phone number</label>
-          <input
-            type="tel"
-            id="phone"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            required
-            placeholder="+1 (555) 000-0000"
-          />
-        </div>
-
-        <div className={styles.inputGroup}>
-          <label htmlFor="comment">Comment</label>
-          <textarea
-            id="comment"
-            name="comment"
-            value={formData.comment}
-            onChange={handleChange}
-            placeholder="Your message"
-            rows="4"
-          />
-        </div>
-
-        <div className={styles.totalPrice}>
-          <span>Total:</span>
-          <span className={styles.totalValue}>
-            ${calculateTotalPrice().toFixed(2)}
-          </span>
+          <div className={styles.inputGroup}>
+            <textarea
+              id="comment"
+              name="comment"
+              value={formData.comment}
+              onChange={handleChange}
+              placeholder="Comment"
+              rows="4"
+            />
+          </div>
         </div>
 
         <button type="submit" className={styles.submitButton}>
-          Book now
+          Send
         </button>
       </form>
     </div>

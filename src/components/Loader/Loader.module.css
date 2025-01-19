@@ -1,6 +1,7 @@
 .loader {
   display: flex;
   justify-content: center;
-  align-items: center;
+  min-width: 760px;
+  width: 100%;
   min-height: 200px;
 }

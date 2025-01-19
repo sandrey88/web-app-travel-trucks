@@ -17,6 +17,7 @@
   flex-direction: column;
   gap: 40px;
   justify-content: center;
+  align-self: start;
 }
 
 .campersList {
@@ -50,7 +51,10 @@
 }
 
 .loading, .noResults, .error {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  min-width: 760px;
+  width: 100%;
   padding: 24px;
   color: var(--text);
   font-weight: 500;

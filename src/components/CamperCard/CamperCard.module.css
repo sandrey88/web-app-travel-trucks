@@ -16,7 +16,7 @@
   border-radius: 10px;
   max-width: 292px;
   width: 100%;
-  height: 100%;
+  height: auto;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -161,6 +161,7 @@
   font-size: 16px;
   color: var(--main);
   background: var(--badges);
+  mix-blend-mode: multiply;
   box-sizing: border-box;
 }
 

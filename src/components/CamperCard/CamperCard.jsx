@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleFavorite } from '../../redux/slices/favoritesSlice';
 import sprite from '../../images/icons.svg';
-import { features } from '../Filters/Filters';
+import { formatPrice } from './Price';
+import { features } from '../Filters/Feachers';
 import styles from './CamperCard.module.css';
 
 const CamperCard = ({ camper }) => {
@@ -18,12 +19,12 @@ const CamperCard = ({ camper }) => {
     window.open(`/catalog/${camper.id}`, '_blank');
   };
 
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    }).format(price);
-  };
+  // const formatPrice = (price) => {
+  //   return new Intl.NumberFormat('en-US', {
+  //     minimumFractionDigits: 2,
+  //     maximumFractionDigits: 2
+  //   }).format(price);
+  // };
 
   // Перевіряємо, чи є у нас всі необхідні дані
   if (!camper || !camper.gallery || !camper.gallery[0]) {
@@ -63,7 +64,12 @@ const CamperCard = ({ camper }) => {
               <svg className={styles.starIcon}>
                 <use href={`${sprite}#icon-star`} />
               </svg>
-              <span>{camper.rating}</span>
+              {camper.reviews && camper.reviews.length > 0 && (
+                <span>
+                  {camper.rating}({camper.reviews.length}{' '}
+                  {camper.reviews.length === 1 ? 'Review' : 'Reviews'})
+                </span>
+              )}
             </div>
             <div className={styles.location}>
               <svg className={styles.mapIcon}>

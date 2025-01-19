@@ -17,7 +17,7 @@ const CatalogPage = () => {
     const queryParams = new URLSearchParams();
     queryParams.append('page', pageNum);
     queryParams.append('limit', 8);
-
+    
     // Додаємо фільтри
     if (filters.location?.trim()) {
       queryParams.append('location', filters.location.trim());
@@ -30,26 +30,25 @@ const CatalogPage = () => {
     // Додаємо активні фільтри обладнання
     Object.entries(filters.features).forEach(([key, value]) => {
       if (value) {
-        queryParams.append('features', key.toLowerCase());
+        queryParams.append('features', key);
       }
     });
 
     return Object.fromEntries(queryParams);
   }, [filters]);
 
-  const handleLoadMore = async () => {
+  const handleLoadMore = useCallback(async () => {
     if (!isLoading && hasMore) {
       try {
-        const queryParams = createQueryParams(page);
+        const queryParams = createQueryParams(page + 1);
         await dispatch(fetchCampers(queryParams));
       } catch (error) {
         console.error('Error loading more campers:', error);
       }
     }
-  };
+  }, [dispatch, createQueryParams, isLoading, hasMore, page]);
 
   useEffect(() => {
-    // Початкове завантаження кемперів
     dispatch(fetchCampers(createQueryParams()));
   }, [dispatch, createQueryParams]);
 
@@ -71,22 +70,27 @@ const CatalogPage = () => {
                     <p>No campers found matching your criteria</p>
                   </div>
                 ) : (
-                  <div className={styles.campersList}>
-                    {items.map((camper) => (
-                      <CamperCard key={camper.id} camper={camper} />
-                    ))}
-                  </div>
+                  <>
+                    <div className={styles.campersList}>
+                      {items.map((camper) => (
+                        <CamperCard 
+                          key={`camper-${camper.id}`} 
+                          camper={camper} 
+                        />
+                      ))}
+                    </div>
+                    {hasMore && !isLoading && (
+                      <button
+                        className={styles.loadMoreButton}
+                        onClick={handleLoadMore}
+                        disabled={isLoading}
+                      >
+                        Load more
+                      </button>
+                    )}
+                    {isLoading && <Loader />}
+                  </>
                 )}
-                {hasMore && !isLoading && items.length > 0 && (
-                  <button
-                    className={styles.loadMoreButton}
-                    onClick={handleLoadMore}
-                    disabled={isLoading}
-                  >
-                    Load more
-                  </button>
-                )}
-                {isLoading && items.length > 0 && <Loader />}
               </>
             )}
           </div>

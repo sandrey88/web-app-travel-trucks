@@ -8,7 +8,7 @@ const Loader = () => {
         height="80"
         width="80"
         radius="9"
-        color="#ff385c"
+        color="#e44848"
         ariaLabel="loading"
       />
     </div>
