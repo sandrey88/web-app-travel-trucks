@@ -65,10 +65,15 @@
   outline: none;
 }
 
-.dateInput {
-  appearance: none; /* Забирає стандартну іконку календаря */
-  -webkit-appearance: none; /* Для Safari */
-  -moz-appearance: none; /* Для Firefox */
+/* .dateInput {
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+} */
+
+.datePickerWrapper {
+  width: 100%;
 }
 
 .inputGroup textarea {
@@ -96,4 +101,46 @@
 
 .submitButton:hover, .submitButton:focus {
   background: var(--button-hover);
+}
+
+:global(.react-datepicker__header) {
+  background-color: var(--white) !important;
+  border-radius: 12px 12px 0 0 !important;
+}
+
+:global(.react-datepicker__current-month) {
+  font-weight: 600 !important;
+  font-size: 16px !important;
+  line-height: 1.2 !important;
+  color: var(--main) !important;
+}
+
+:global(.react-datepicker__day-names) {
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  line-height: 1.2 !important;
+  color: var(--text) !important;
+  text-transform: uppercase !important;
+}
+
+:global(.react-datepicker__day) {
+  color: var(--main) !important;
+  font-weight: 400 !important;
+  font-size: 14px !important;
+}
+
+:global(.react-datepicker__day--outside-month) {
+  color: var(--text) !important;
+}
+
+:global(.react-datepicker) {
+  border: 1px solid var(--text) !important;
+  border-radius: 12px !important;
+}
+
+:global(.react-datepicker__day:hover),
+:global(.react-datepicker__day--selected) {
+  background-color: var(--text) !important;
+  color: var(--white) !important;
+  border-radius: 50% !important;
 }

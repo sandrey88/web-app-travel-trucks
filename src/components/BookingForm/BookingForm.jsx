@@ -1,15 +1,15 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import styles from './BookingForm.module.css';
 
 const BookingForm = ({ onSubmit }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    date: '',
+    date: null,
     comment: ''
   });
-
-  const dateInputRef = useRef(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,10 +19,11 @@ const BookingForm = ({ onSubmit }) => {
     }));
   };
 
-  const handleDateFocus = () => {
-    if (dateInputRef.current) {
-      dateInputRef.current.showPicker(); // Відкриває календар
-    }
+  const handleDateChange = (date) => {
+    setFormData((prev) => ({
+      ...prev,
+      date
+    }));
   };
 
   const handleSubmit = (e) => {
@@ -63,26 +64,13 @@ const BookingForm = ({ onSubmit }) => {
           </div>
 
           <div className={styles.inputGroup}>
-            <input
-              type="text"
-              id="date"
-              name="date"
-              value={formData.date}
-              onFocus={handleDateFocus}
-              onChange={handleChange}
-              required
-              placeholder="Booking date*"
+            <DatePicker
+              selected={formData.date}
+              onChange={handleDateChange}
+              placeholderText="Booking date*"
               className={styles.dateInput}
-            />
-            <input
-              type="date"
-              ref={dateInputRef}
-              style={{ display: 'none' }}
-              onChange={(e) => {
-                handleChange(e);
-                dateInputRef.current.blur(); // Закриває календар після вибору
-              }}
-              name="date"
+              wrapperClassName={styles.datePickerWrapper}
+              dateFormat="dd.MM.yyyy"
             />
           </div>
 
