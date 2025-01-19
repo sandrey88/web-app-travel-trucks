@@ -21,13 +21,19 @@ const Reviews = ({ reviews }) => {
     ));
   };
 
+  const getInitial = (name) => {
+    return name ? name.charAt(0).toUpperCase() : '';
+  };
+
   return (
     <div className={styles.reviews}>
-      <h2 className={styles.title}>Reviews</h2>
       <div className={styles.reviewsList}>
         {displayedReviews.map((review, index) => (
           <div key={index} className={styles.reviewItem}>
             <div className={styles.reviewHeader}>
+              <div className={styles.reviewerAva}>
+                {getInitial(review.reviewer_name)}
+              </div>
               <div className={styles.reviewerInfo}>
                 <span className={styles.reviewerName}>{review.reviewer_name}</span>
                 <div className={styles.rating}>
@@ -39,12 +45,12 @@ const Reviews = ({ reviews }) => {
           </div>
         ))}
       </div>
-      {reviews.length > 3 && (
+      {reviews.length > 3 && !showAll && (
         <button
           className={styles.showMoreButton}
-          onClick={() => setShowAll(!showAll)}
+          onClick={() => setShowAll(true)}
         >
-          {showAll ? 'Show Less' : 'Show More Reviews'}
+          Show all reviews
         </button>
       )}
     </div>

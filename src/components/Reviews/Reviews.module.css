@@ -1,32 +1,39 @@
 .reviews {
-  margin-top: 48px;
-}
-
-.title {
-  font-size: 24px;
-  font-weight: 600;
-  color: #121417;
-  margin-bottom: 24px;
+  margin-top: 12px;
+  background: var(--white);
 }
 
 .reviewsList {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 44px;
+  margin-bottom: 24px;
 }
 
 .reviewItem {
-  padding: 24px;
-  background: #FFFFFF;
-  border-radius: 10px;
-  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1);
+  background: var(--white);
 }
 
 .reviewHeader {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
+  gap: 16px;
   margin-bottom: 16px;
+}
+
+.reviewerAva {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--badges);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 1.33;
+  color: var(--button);
+  text-transform: uppercase;
 }
 
 .reviewerInfo {
@@ -36,9 +43,11 @@
 }
 
 .reviewerName {
-  font-size: 18px;
-  font-weight: 600;
-  color: #121417;
+  text-align: left;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--main);
 }
 
 .rating {
@@ -47,36 +56,40 @@
 }
 
 .star {
-  color: #E3E3E3;
-  font-size: 18px;
+  color: var(--badges);
+  font-size: 16px;
 }
 
 .star.filled {
-  color: #FFC531;
+  color: var(--rating);
 }
 
 .comment {
+  text-align: left;
+  font-weight: 400;
   font-size: 16px;
   line-height: 1.5;
-  color: #121417;
-  margin: 0;
+  color: var(--text);
 }
 
 .showMoreButton {
-  width: 100%;
-  padding: 16px;
-  margin-top: 24px;
-  background: transparent;
-  border: 1px solid #E44848;
+  display: flex;
+  align-self: center;
+  align-items: center;
+  justify-content: center;
   border-radius: 200px;
-  color: #E44848;
-  font-size: 16px;
+  padding: 16px 60px;
   font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: var(--main);
+  text-decoration: none;
+  background-color: transparent;
+  border: 1px solid var(--gray-light);
+  transition: border-color 0.3s ease;
 }
 
 .showMoreButton:hover {
-  background: #E44848;
-  color: white;
+  border-color: var(--button-hover);
 }

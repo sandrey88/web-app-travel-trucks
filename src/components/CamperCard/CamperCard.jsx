@@ -19,13 +19,6 @@ const CamperCard = ({ camper }) => {
     window.open(`/catalog/${camper.id}`, '_blank');
   };
 
-  // const formatPrice = (price) => {
-  //   return new Intl.NumberFormat('en-US', {
-  //     minimumFractionDigits: 2,
-  //     maximumFractionDigits: 2
-  //   }).format(price);
-  // };
-
   // Перевіряємо, чи є у нас всі необхідні дані
   if (!camper || !camper.gallery || !camper.gallery[0]) {
     console.error('Invalid camper data:', camper);

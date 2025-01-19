@@ -1,11 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  --primary-color: #ff385c;
-  --primary-hover: #e61e4d;
-  --text-color: #121417;
-  --text-secondary: #8a8a89;
-  --background-light: #f7f7f7;
   --main: #101828;
   --text: #475467;
   --white: #fff;
