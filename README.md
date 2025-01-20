@@ -39,9 +39,9 @@ Before you begin, ensure you have the following installed:
 
 Start the development server:
 
-    ```bash
-    npm run dev
-    ```
+```bash
+npm run dev
+```
 
 The application will be available at http://localhost:5173 (default Vite port).
 
@@ -51,9 +51,9 @@ The application will be available at http://localhost:5173 (default Vite port).
 
 To build the project for production:
 
-    ```bash
-    npm run build
-    ```
+```bash
+npm run build
+```
 
 The production-ready files will be stored in the dist/ folder.
 
