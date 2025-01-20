@@ -10,7 +10,7 @@ export const fetchCampers = createAsyncThunk(
       console.log("Fetching campers with params:", params);
       const response = await axios.get(`${BASE_URL}/campers`, { params });
       console.log("API Response:", response.data);
-      // Повертаємо тільки масив items з відповіді
+      // Returning only the items array from the response
       return response.data.items || [];
     } catch (error) {
       console.error("API Error:", error.response || error);
@@ -73,7 +73,7 @@ const campersSlice = createSlice({
           state.items = [...state.items, ...newItems];
         }
 
-        // Оновлюємо hasMore базуючись на кількості отриманих елементів
+        // Updating hasMore based on the number of received elements
         state.hasMore = newItems.length === 8;
         state.page += 1;
       })

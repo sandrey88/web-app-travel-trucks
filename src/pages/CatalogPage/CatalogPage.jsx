@@ -13,12 +13,11 @@ const CatalogPage = () => {
   const filters = useSelector((state) => state.filters);
 
   const createQueryParams = useCallback((pageNum = 1) => {
-    // Базові параметри
+    // Basic parameters
     const queryParams = new URLSearchParams();
     queryParams.append('page', pageNum);
     queryParams.append('limit', 8);
     
-    // Додаємо фільтри
     if (filters.location?.trim()) {
       queryParams.append('location', filters.location.trim());
     }
@@ -27,7 +26,7 @@ const CatalogPage = () => {
       queryParams.append('type', filters.vehicleType);
     }
 
-    // Додаємо активні фільтри обладнання
+    // Adding active equipment filters
     Object.entries(filters.features).forEach(([key, value]) => {
       if (value) {
         queryParams.append('features', key);

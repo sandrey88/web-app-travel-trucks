@@ -28,7 +28,6 @@ const Gallery = ({ images }) => {
     return null;
   }
 
-  // Показуємо максимум 4 зображення
   const displayImages = images.slice(0, 4);
 
   return (

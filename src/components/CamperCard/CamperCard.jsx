@@ -19,7 +19,6 @@ const CamperCard = ({ camper }) => {
     window.open(`/catalog/${camper.id}`, '_blank');
   };
 
-  // Перевіряємо, чи є у нас всі необхідні дані
   if (!camper || !camper.gallery || !camper.gallery[0]) {
     console.error('Invalid camper data:', camper);
     return null;
@@ -77,12 +76,12 @@ const CamperCard = ({ camper }) => {
 
         <div className={styles.features}>
           {features.map(({ id, label, icon }) => {
-            // Перевіряємо, чи ця функція доступна для поточного camper
+            // Checking whether this function is available for the current camper
             const isFeatureAvailable = id === 'automatic'
-              ? camper.transmission === 'automatic' // Спеціальна перевірка для автоматичної коробки передач
-              : camper[id]; // Загальна перевірка для решти features
+              ? camper.transmission === 'automatic' // Special check for automatic transmission
+              : camper[id]; // General check for the rest of the features
 
-            if (!isFeatureAvailable) return null; // Якщо функція недоступна, не рендеримо її
+            if (!isFeatureAvailable) return null;
 
             return (
               <div className={styles.feature} key={id}>
