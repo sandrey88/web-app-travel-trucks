@@ -24,6 +24,12 @@
   object-fit: contain;
 }
 
+.logo img {
+  max-width: none;
+  height: auto;
+  width: 136px;
+}
+
 .nav {
   display: flex;
   align-items: center;

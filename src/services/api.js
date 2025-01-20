@@ -1,17 +1,34 @@
-import axios from 'axios';
+import axios from "axios";
 
-const BASE_URL = 'https://66b1f8e71ca8ad33d4f5f63e.mockapi.io';
-
-export const api = axios.create({
-  baseURL: BASE_URL,
-});
+axios.defaults.baseURL = "https://66b1f8e71ca8ad33d4f5f63e.mockapi.io/";
 
 export const getCampers = async (params = {}) => {
-  const response = await api.get('/campers', { params });
-  return response.data;
+  try {
+    const response = await axios.get("/campers", {
+      params: {
+        page: params.page || 1,
+        limit: params.limit || 8,
+        ...params.filters,
+      },
+    });
+
+    // The API returns { total: number, items: array }
+    return {
+      items: response.data.items || [],
+      total: response.data.total || 0
+    };
+  } catch (error) {
+    console.error("API Error:", error);
+    throw error;
+  }
 };
 
 export const getCamperById = async (id) => {
-  const response = await api.get(`/campers/${id}`);
-  return response.data;
+  try {
+    const response = await axios.get(`/campers/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("API Error:", error);
+    throw error;
+  }
 };

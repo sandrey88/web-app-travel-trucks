@@ -4,11 +4,14 @@ const initialState = {
   location: '',
   vehicleType: '',
   features: {
-    AC: false,
-    automatic: false,
+    bathroom: false,
     kitchen: false,
     TV: false,
-    bathroom: false
+    radio: false,
+    refrigerator: false,
+    microwave: false,
+    gas: false,
+    water: false
   },
 };
 

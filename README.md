@@ -1,6 +1,7 @@
 # **TravelTrucks**
 
-**TravelTrucks is an application for finding and renting campers. This repository contains the frontend part of the project, built with Vite + React.**
+**TravelTrucks is an application for finding and renting campers. This repository contains the frontend part of the project, built with React + Vite.**
+**Neoversity curriculum test task (neo.goit.global).**
 
 ---
 
@@ -72,3 +73,9 @@ To deploy the application:
 ## **Contact**
 
 For questions or assistance, please contact andrii.sushylnikov@gmail.com.
+
+---
+
+## **License**
+
+MIT

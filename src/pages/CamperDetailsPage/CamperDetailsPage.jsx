@@ -5,7 +5,7 @@ import { fetchCamperById } from '../../redux/slices/campersSlice';
 import Header from '../../components/Header/Header';
 import sprite from '../../images/icons.svg';
 import { formatPrice } from '../../components/CamperCard/Price';
-import { features } from '../../components/Filters/Feachers';
+import { features } from '../../components/Filters/Features';
 import Gallery from '../../components/Gallery/Gallery';
 import Reviews from '../../components/Reviews/Reviews';
 import BookingForm from '../../components/BookingForm/BookingForm';
@@ -116,12 +116,11 @@ const CamperDetailsPage = () => {
                 <div className={styles.allFeatures}>
                   <div className={styles.features}>
                     {features.map(({ id, label, icon }) => {
-                      // We check whether this function is available for the current camper
                       const isFeatureAvailable = id === 'automatic'
-                        ? camper.transmission === 'automatic' // Special check for automatic transmission
-                        : camper[id]; // General check for the rest of the features
+                        ? camper.transmission === 'automatic'
+                        : camper.features?.[id];
 
-                      if (!isFeatureAvailable) return null; // Skip if the feature is not available
+                      if (!isFeatureAvailable) return null;
 
                       return (
                         <div className={styles.feature} key={id}>
@@ -132,6 +131,7 @@ const CamperDetailsPage = () => {
                         </div>
                       );
                     })}
+
                   </div>
                   <div className={styles.specifications}>
                     <h3 className={styles.sectionTitle}>Vehicle details</h3>

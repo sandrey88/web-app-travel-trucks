@@ -1,6 +1,13 @@
 import { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCampers } from '../../redux/slices/campersSlice';
+import { 
+  fetchCampers, 
+  selectCampers, 
+  selectPagination, 
+  selectHasMore,
+  selectIsLoading,
+  selectError
+} from '../../redux/slices/campersSlice';
 import Header from '../../components/Header/Header';
 import Filters from '../../components/Filters/Filters';
 import CamperCard from '../../components/CamperCard/CamperCard';
@@ -9,38 +16,44 @@ import styles from './CatalogPage.module.css';
 
 const CatalogPage = () => {
   const dispatch = useDispatch();
-  const { items, isLoading, page, hasMore } = useSelector((state) => state.campers);
+  const items = useSelector(selectCampers);
+  const { page } = useSelector(selectPagination);
+  const hasMore = useSelector(selectHasMore);
+  const isLoading = useSelector(selectIsLoading);
+  const error = useSelector(selectError);
   const filters = useSelector((state) => state.filters);
 
-  const createQueryParams = useCallback((pageNum = 1) => {
-    // Basic parameters
-    const queryParams = new URLSearchParams();
-    queryParams.append('page', pageNum);
-    queryParams.append('limit', 8);
+  const createQueryParams = useCallback(() => {
+    const params = {};
     
     if (filters.location?.trim()) {
-      queryParams.append('location', filters.location.trim());
+      params.location = filters.location.trim();
     }
 
     if (filters.vehicleType) {
-      queryParams.append('type', filters.vehicleType);
+      params.type = filters.vehicleType;
     }
 
     // Adding active equipment filters
-    Object.entries(filters.features).forEach(([key, value]) => {
-      if (value) {
-        queryParams.append('features', key);
-      }
-    });
+    const activeFeatures = Object.entries(filters.features)
+      .filter(([, value]) => value)
+      .map(([key]) => key);
 
-    return Object.fromEntries(queryParams);
+    if (activeFeatures.length > 0) {
+      params.features = activeFeatures;
+    }
+
+    return params;
   }, [filters]);
 
   const handleLoadMore = useCallback(async () => {
     if (!isLoading && hasMore) {
       try {
-        const queryParams = createQueryParams(page + 1);
-        await dispatch(fetchCampers(queryParams));
+        const params = {
+          ...createQueryParams(),
+          page: page + 1
+        };
+        await dispatch(fetchCampers(params));
       } catch (error) {
         console.error('Error loading more campers:', error);
       }
@@ -48,7 +61,11 @@ const CatalogPage = () => {
   }, [dispatch, createQueryParams, isLoading, hasMore, page]);
 
   useEffect(() => {
-    dispatch(fetchCampers(createQueryParams()));
+    const params = {
+      ...createQueryParams(),
+      page: 1
+    };
+    dispatch(fetchCampers(params));
   }, [dispatch, createQueryParams]);
 
   return (
@@ -57,14 +74,19 @@ const CatalogPage = () => {
       <main className={styles.main}>
         <div className={styles.container}>
           <div className={styles.sidebar}>
-            <Filters createQueryParams={createQueryParams} />
+            <Filters />
           </div>
           <div className={styles.content}>
+            {error && (
+              <div className={styles.error}>
+                <p>Error loading campers. Please try again later.</p>
+              </div>
+            )}
             {isLoading && items.length === 0 ? (
               <Loader />
             ) : (
               <>
-                {items.length === 0 ? (
+                {items.length === 0 && !error ? (
                   <div className={styles.noResults}>
                     <p>No campers found matching your criteria</p>
                   </div>
@@ -73,7 +95,7 @@ const CatalogPage = () => {
                     <div className={styles.campersList}>
                       {items.map((camper) => (
                         <CamperCard 
-                          key={`camper-${camper.id}`} 
+                          key={camper.id} 
                           camper={camper} 
                         />
                       ))}

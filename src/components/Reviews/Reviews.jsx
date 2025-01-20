@@ -4,11 +4,12 @@ import styles from './Reviews.module.css';
 const Reviews = ({ reviews }) => {
   const [showAll, setShowAll] = useState(false);
 
-  if (!reviews || reviews.length === 0) {
-    return null;
-  }
+  // Перевірка на масив
+  const displayedReviews = Array.isArray(reviews) ? (showAll ? reviews : reviews.slice(0, 3)) : [];
 
-  const displayedReviews = showAll ? reviews : reviews.slice(0, 3);
+  if (displayedReviews.length === 0) {
+    return <p>No reviews available.</p>;
+  }
 
   const renderStars = (rating) => {
     return [...Array(5)].map((_, index) => (
@@ -35,13 +36,13 @@ const Reviews = ({ reviews }) => {
                 {getInitial(review.reviewer_name)}
               </div>
               <div className={styles.reviewerInfo}>
-                <span className={styles.reviewerName}>{review.reviewer_name}</span>
+                <span className={styles.reviewerName}>{review.reviewer_name || 'Anonymous'}</span>
                 <div className={styles.rating}>
-                  {renderStars(review.reviewer_rating)}
+                  {renderStars(review.reviewer_rating || 0)}
                 </div>
               </div>
             </div>
-            <p className={styles.comment}>{review.comment}</p>
+            <p className={styles.comment}>{review.comment || 'No comments provided.'}</p>
           </div>
         ))}
       </div>

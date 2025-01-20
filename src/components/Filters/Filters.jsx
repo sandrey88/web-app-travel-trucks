@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLocation, setVehicleType, toggleFeature } from '../../redux/slices/filtersSlice';
-import { fetchCampers, clearCampers } from '../../redux/slices/campersSlice';
+import { fetchCampers, clearCampers, resetPagination } from '../../redux/slices/campersSlice';
+import { getCampers } from '../../services/api';
 import sprite from '../../images/icons.svg';
-import { features } from './Feachers';
+import { features } from './Features';
 import styles from './Filters.module.css';
 
 const vehicleTypes = [
@@ -12,7 +13,7 @@ const vehicleTypes = [
   { id: 'alcove', label: 'Alcove', icon: 'icon-bi_grid-3x3' }
 ];
 
-const Filters = ({ createQueryParams }) => {
+const Filters = () => {
   const dispatch = useDispatch();
   const filters = useSelector((state) => state.filters);
   const [locationSuggestions, setLocationSuggestions] = useState([]);
@@ -49,22 +50,15 @@ const Filters = ({ createQueryParams }) => {
 
     setIsLoading(true);
     try {
-      const response = await fetch('https://66b1f8e71ca8ad33d4f5f63e.mockapi.io/campers');
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      
-      const data = await response.json();
-      const locations = [...new Set(data.map(camper => camper.location))];
+      const response = await getCampers();
+      const locations = [...new Set(response.items.map(camper => camper.location))];
       const searchLower = searchText.toLowerCase();
 
       const filteredLocations = locations.filter(loc => {
         if (!loc) return false;
-        const [country, city] = loc.split(',').map(part => part.trim().toLowerCase());
-        return city?.includes(searchLower) || country?.includes(searchLower);
+        return loc.toLowerCase().includes(searchLower);
       });
 
-      console.log('Filtered locations:', filteredLocations); // For debugging
       setLocationSuggestions(filteredLocations);
       setShowSuggestions(filteredLocations.length > 0);
     } catch (error) {
@@ -104,9 +98,9 @@ const Filters = ({ createQueryParams }) => {
   };
 
   const handleSearch = () => {
-    const queryParams = createQueryParams();
+    dispatch(resetPagination());
     dispatch(clearCampers());
-    dispatch(fetchCampers(queryParams));
+    dispatch(fetchCampers());
   };
 
   return (

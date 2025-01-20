@@ -1,19 +1,69 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import { getCampers, getCamperById } from "../../services/api";
 
-const BASE_URL = "https://66b1f8e71ca8ad33d4f5f63e.mockapi.io";
+// Transform camper data for catalog display
+const transformCamperForCatalog = (camper) => ({
+  id: camper.id,
+  name: camper.name,
+  price: camper.price,
+  rating: camper.rating,
+  reviews: camper.reviews || [],
+  location: camper.location,
+  description:
+    camper.description?.length > 150
+      ? `${camper.description.slice(0, 150)}...`
+      : camper.description || "",
+  gallery: camper.gallery || [],
+  features: {
+    AC: camper.AC || false,
+    automatic: camper.automatic || false,
+    bathroom: camper.bathroom || false,
+    kitchen: camper.kitchen || false,
+    TV: camper.TV || false,
+    radio: camper.radio || false,
+    refrigerator: camper.refrigerator || false,
+    microwave: camper.microwave || false,
+    gas: camper.gas || false,
+    water: camper.water || false,
+  },
+  form: camper.form,
+  length: camper.length,
+  width: camper.width,
+  height: camper.height,
+  tank: camper.tank,
+  consumption: camper.consumption,
+});
 
 export const fetchCampers = createAsyncThunk(
   "campers/fetchCampers",
-  async (params = {}) => {
+  async ({ page = 1, limit = 8 }, { getState }) => {
     try {
-      console.log("Fetching campers with params:", params);
-      const response = await axios.get(`${BASE_URL}/campers`, { params });
-      console.log("API Response:", response.data);
-      // Returning only the items array from the response
-      return response.data.items || [];
+      const filters = getState().filters;
+      const activeFilters = {
+        location: filters.location || undefined,
+        type: filters.vehicleType || undefined,
+        ...Object.keys(filters.features)
+          .filter((key) => filters.features[key])
+          .reduce((acc, key) => ({ ...acc, [key]: true }), {}),
+      };
+
+      const response = await getCampers({
+        page,
+        limit,
+        filters: activeFilters,
+      });
+
+      // Ensure we have the expected data structure
+      if (!response || !Array.isArray(response.items)) {
+        throw new Error("Invalid response format from API");
+      }
+
+      return {
+        items: response.items.map(transformCamperForCatalog),
+        total: response.total || response.items.length,
+      };
     } catch (error) {
-      console.error("API Error:", error.response || error);
+      console.error("API Error:", error);
       throw error;
     }
   }
@@ -23,10 +73,13 @@ export const fetchCamperById = createAsyncThunk(
   "campers/fetchCamperById",
   async (id) => {
     try {
-      const response = await axios.get(`${BASE_URL}/campers/${id}`);
-      return response.data;
+      const data = await getCamperById(id);
+      if (!data) {
+        throw new Error("Camper not found");
+      }
+      return transformCamperForCatalog(data);
     } catch (error) {
-      console.error("API Error:", error.response || error);
+      console.error("API Error:", error);
       throw error;
     }
   }
@@ -53,6 +106,13 @@ const campersSlice = createSlice({
       state.error = null;
       state.total = 0;
     },
+    setPage: (state, action) => {
+      state.page = action.payload;
+    },
+    resetPagination: (state) => {
+      state.page = 1;
+      state.hasMore = true;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -64,23 +124,31 @@ const campersSlice = createSlice({
         state.isLoading = false;
         state.error = null;
 
-        const newItems = Array.isArray(action.payload) ? action.payload : [];
-        console.log("Received items:", newItems);
+        const { items, total } = action.payload;
+        const itemsPerPage = 8;
+        const startIndex = (state.page - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+
+        // Get items for current page
+        const pageItems = items.slice(startIndex, endIndex);
 
         if (state.page === 1) {
-          state.items = newItems;
+          state.items = pageItems;
         } else {
-          state.items = [...state.items, ...newItems];
+          // Filter out duplicates based on ID
+          const existingIds = new Set(state.items.map((item) => item.id));
+          const uniqueNewItems = pageItems.filter(
+            (item) => !existingIds.has(item.id)
+          );
+          state.items = [...state.items, ...uniqueNewItems];
         }
 
-        // Updating hasMore based on the number of received elements
-        state.hasMore = newItems.length === 8;
-        state.page += 1;
+        state.total = total;
+        state.hasMore = endIndex < total;
       })
       .addCase(fetchCampers.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
-        console.error("Redux Error:", action.error);
       })
       .addCase(fetchCamperById.pending, (state) => {
         state.isLoading = true;
@@ -97,5 +165,15 @@ const campersSlice = createSlice({
   },
 });
 
-export const { clearCampers } = campersSlice.actions;
+export const { clearCampers, setPage, resetPagination } = campersSlice.actions;
 export const campersReducer = campersSlice.reducer;
+
+// Memoized selectors
+export const selectCampers = (state) => state.campers.items;
+export const selectPagination = (state) => ({
+  page: state.campers.page,
+  total: state.campers.total,
+});
+export const selectHasMore = (state) => state.campers.hasMore;
+export const selectIsLoading = (state) => state.campers.isLoading;
+export const selectError = (state) => state.campers.error;
