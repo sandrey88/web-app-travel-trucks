@@ -64,7 +64,7 @@ const Filters = ({ createQueryParams }) => {
         return city?.includes(searchLower) || country?.includes(searchLower);
       });
 
-      console.log('Filtered locations:', filteredLocations); // Для дебагу
+      console.log('Filtered locations:', filteredLocations); // For debugging
       setLocationSuggestions(filteredLocations);
       setShowSuggestions(filteredLocations.length > 0);
     } catch (error) {

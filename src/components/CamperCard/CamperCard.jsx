@@ -44,7 +44,7 @@ const CamperCard = ({ camper }) => {
           <div className={styles.titleRow}>
             <h2 className={styles.title}>{camper.name}</h2>
             <div className={styles.priceAndFavorite}>
-              <p className={styles.price}>${formatPrice(camper.price)}</p>
+              <p className={styles.price}>{formatPrice(camper.price)}</p>
               <button className={`${styles.favoriteButton} ${isFavorite ? styles.active : ''}`} onClick={handleFavoriteClick} aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}>
                 <svg className={styles.favoriteIcon}>
                   <use href={`${sprite}#icon-heart`} />

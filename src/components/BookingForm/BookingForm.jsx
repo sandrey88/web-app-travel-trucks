@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { toast } from 'react-toastify'; // Імпортуємо toast
+import { toast } from 'react-toastify';
 import styles from './BookingForm.module.css';
 
 const BookingForm = ({ onSubmit }) => {
@@ -30,13 +30,13 @@ const BookingForm = ({ onSubmit }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Перевірка успішної відправки
+    // Verification of successful sending
     try {
-      onSubmit(formData); // Виклик функції onSubmit
-      toast.success('Booking successful!'); // Нотифікація про успішне бронювання
-      setFormData({ name: '', email: '', date: null, comment: '' }); // Очищення форми після успішного відправлення
+      onSubmit(formData);
+      toast.success('Booking successful!');
+      setFormData({ name: '', email: '', date: null, comment: '' });
     } catch {
-      toast.error('Something went wrong! Please try again.'); // Нотифікація про помилку
+      toast.error('Something went wrong! Please try again.');
     }
   };
 

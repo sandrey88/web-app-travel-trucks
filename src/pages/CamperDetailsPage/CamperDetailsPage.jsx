@@ -24,7 +24,7 @@ const CamperDetailsPage = () => {
 
   const handleBookingSubmit = (formData) => {
     console.log('Booking submitted:', formData);
-    // Тут буде логіка відправки даних на сервер
+    // Here will be the logic of sending data to the server
   };
 
   if (isLoading) {
@@ -85,7 +85,7 @@ const CamperDetailsPage = () => {
                     <span>{camper.location}</span>
                   </div>
                 </div>
-                <p className={styles.price}>${formatPrice(camper.price)}</p>
+                <p className={styles.price}>{formatPrice(camper.price)}</p>
               </div>
             </div>
             <Gallery images={camper.gallery} />
@@ -116,12 +116,12 @@ const CamperDetailsPage = () => {
                 <div className={styles.allFeatures}>
                   <div className={styles.features}>
                     {features.map(({ id, label, icon }) => {
-                      // Перевіряємо, чи ця функція доступна для поточного camper
+                      // We check whether this function is available for the current camper
                       const isFeatureAvailable = id === 'automatic'
-                        ? camper.transmission === 'automatic' // Спеціальна перевірка для автоматичної коробки передач
-                        : camper[id]; // Загальна перевірка для решти features
+                        ? camper.transmission === 'automatic' // Special check for automatic transmission
+                        : camper[id]; // General check for the rest of the features
 
-                      if (!isFeatureAvailable) return null; // Якщо функція недоступна, не рендеримо її
+                      if (!isFeatureAvailable) return null; // Skip if the feature is not available
 
                       return (
                         <div className={styles.feature} key={id}>

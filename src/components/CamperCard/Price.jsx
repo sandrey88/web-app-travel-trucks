@@ -1,6 +1,6 @@
 export const formatPrice = (price) => {
-  return new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  }).format(price);
+  // Converting the number into a string with two decimal places
+  const formattedNumber = price.toFixed(2).replace('.', ',');
+
+  return `€${formattedNumber}`;
 };
