@@ -30,7 +30,11 @@ const transformCamperForCatalog = (camper) => ({
     gas: camper.gas || false,
     water: camper.water || false,
   },
-  type: camper.type || "",
+  vehicleType: {
+    panelTruck: camper.form === "panelTruck",
+    fullyIntegrated: camper.form === "fullyIntegrated",
+    alcove: camper.form === "alcove",
+  },
   form: camper.form,
   length: camper.length,
   width: camper.width,
@@ -46,40 +50,34 @@ export const fetchCampers = createAsyncThunk(
       const state = getState();
       const filters = state.filters;
       let allTransformedItems = [];
-      
+
       // Only fetch from API on first page or if we don't have items
       if (page === 1 || state.campers.allItems.length === 0) {
-        // Get all campers first
         const response = await getCampers({
           page: 1,
-          limit: 100, // Get more items to allow for filtering
+          limit: 100,
         });
 
         if (!response || !Array.isArray(response.items)) {
           throw new Error("Invalid response format from API");
         }
 
-        // Transform all items
         allTransformedItems = response.items.map(transformCamperForCatalog);
       } else {
-        // Use stored items for subsequent pages
         allTransformedItems = state.campers.allItems;
       }
-      
+
       // Prepare filters
       const activeFilters = {};
-      
-      // Add location filter if present
+
       if (filters.location?.trim()) {
         activeFilters.location = filters.location.trim();
       }
-      
-      // Add vehicle type filter if present
+
       if (filters.vehicleType) {
-        activeFilters.type = filters.vehicleType;
+        activeFilters.vehicleType = filters.vehicleType;
       }
-      
-      // Add feature filters
+
       Object.entries(filters.features)
         .filter(([_, value]) => value)
         .forEach(([key]) => {
@@ -87,21 +85,32 @@ export const fetchCampers = createAsyncThunk(
         });
 
       // Apply filters
-      let filteredItems = allTransformedItems.filter(camper => {
+      let filteredItems = allTransformedItems.filter((camper) => {
         // Filter by location if specified
-        if (activeFilters.location && 
-            !camper.location?.toLowerCase().includes(activeFilters.location.toLowerCase())) {
+        if (
+          activeFilters.location &&
+          !camper.location
+            ?.toLowerCase()
+            .includes(activeFilters.location.toLowerCase())
+        ) {
           return false;
         }
 
-        // Filter by vehicle type if specified
-        if (activeFilters.type && camper.type !== activeFilters.type) {
+        // Filter by vehicle type (form) if specified
+        if (
+          activeFilters.vehicleType &&
+          camper.form !== activeFilters.vehicleType
+        ) {
           return false;
         }
 
         // Filter by features
         for (const [feature, isRequired] of Object.entries(activeFilters)) {
-          if (isRequired && feature !== 'location' && feature !== 'type') {
+          if (
+            isRequired &&
+            feature !== "location" &&
+            feature !== "vehicleType"
+          ) {
             if (!camper.features[feature]) {
               return false;
             }

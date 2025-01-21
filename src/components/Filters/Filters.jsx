@@ -4,14 +4,14 @@ import { setLocation, setVehicleType, toggleFeature } from '../../redux/slices/f
 import { fetchCampers, clearCampers, resetPagination } from '../../redux/slices/campersSlice';
 import { getCampers } from '../../services/api';
 import sprite from '../../images/icons.svg';
-import { features } from './Features';
+import { features, vehicleTypes } from './Features';
 import styles from './Filters.module.css';
 
-const vehicleTypes = [
-  { id: 'panelTruck', label: 'Van', icon: 'icon-bi_grid-1x2' },
-  { id: 'fullyIntegrated', label: 'Fully Integrated', icon: 'icon-bi_grid' },
-  { id: 'alcove', label: 'Alcove', icon: 'icon-bi_grid-3x3' }
-];
+// const vehicleTypes = [
+//   { id: 'panelTruck', label: 'Van', icon: 'icon-bi_grid-1x2' },
+//   { id: 'fullyIntegrated', label: 'Fully Integrated', icon: 'icon-bi_grid' },
+//   { id: 'alcove', label: 'Alcove', icon: 'icon-bi_grid-3x3' }
+// ];
 
 const Filters = () => {
   const dispatch = useDispatch();

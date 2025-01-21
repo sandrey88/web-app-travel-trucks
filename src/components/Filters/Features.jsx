@@ -10,3 +10,9 @@ export const features = [
   { id: 'gas', label: 'Gas', icon: 'icon-gas' },
   { id: 'water', label: 'Water', icon: 'icon-water' }
 ];
+
+export const vehicleTypes = [
+  { id: 'panelTruck', label: 'Van', icon: 'icon-bi_grid-1x2' },
+  { id: 'fullyIntegrated', label: 'Fully Integrated', icon: 'icon-bi_grid' },
+  { id: 'alcove', label: 'Alcove', icon: 'icon-bi_grid-3x3' }
+];
