@@ -41,35 +41,75 @@ const transformCamperForCatalog = (camper) => ({
 
 export const fetchCampers = createAsyncThunk(
   "campers/fetchCampers",
-  async ({ page = 1, limit = 8 }, { getState }) => {
+  async ({ page = 1 } = {}, { getState }) => {
     try {
       const filters = getState().filters;
-      const activeFilters = {
-        location: filters.location || undefined,
-        type: filters.vehicleType || undefined,
-        ...Object.keys(filters.features)
-          .filter((key) => filters.features[key])
-          .reduce((acc, key) => ({ ...acc, [key]: true }), {}),
-      };
+      
+      // Prepare filters
+      const activeFilters = {};
+      
+      // Add location filter if present
+      if (filters.location?.trim()) {
+        activeFilters.location = filters.location.trim();
+      }
+      
+      // Add vehicle type filter if present
+      if (filters.vehicleType) {
+        activeFilters.type = filters.vehicleType;
+      }
+      
+      // Add feature filters
+      Object.entries(filters.features)
+        .filter(([_, value]) => value)
+        .forEach(([key]) => {
+          activeFilters[key] = true;
+        });
 
+      // Get all campers first
       const response = await getCampers({
         page,
-        limit,
-        filters: activeFilters,
+        limit: 8,
       });
 
-      // Ensure we have the expected data structure
       if (!response || !Array.isArray(response.items)) {
         throw new Error("Invalid response format from API");
       }
 
+      // Transform and filter campers locally
+      let filteredItems = response.items
+        .map(transformCamperForCatalog)
+        .filter(camper => {
+          // Filter by location if specified
+          if (activeFilters.location && 
+              !camper.location?.toLowerCase().includes(activeFilters.location.toLowerCase())) {
+            return false;
+          }
+
+          // Filter by vehicle type if specified
+          if (activeFilters.type && camper.type !== activeFilters.type) {
+            return false;
+          }
+
+          // Filter by features
+          for (const [feature, isRequired] of Object.entries(activeFilters)) {
+            if (isRequired && feature !== 'location' && feature !== 'type') {
+              if (!camper.features[feature]) {
+                return false;
+              }
+            }
+          }
+
+          return true;
+        });
+
       return {
-        items: response.items.map(transformCamperForCatalog),
-        total: response.total || response.items.length,
+        items: filteredItems,
+        total: filteredItems.length,
+        page,
       };
     } catch (error) {
       console.error("API Error:", error);
-      throw error;
+      throw new Error("Failed to fetch campers. Please try again.");
     }
   }
 );
@@ -129,31 +169,27 @@ const campersSlice = createSlice({
         state.isLoading = false;
         state.error = null;
 
-        const { items, total } = action.payload;
-        const itemsPerPage = 8;
-        const startIndex = (state.page - 1) * itemsPerPage;
-        const endIndex = startIndex + itemsPerPage;
+        const { items, total, page } = action.payload;
 
-        // Get items for current page
-        const pageItems = items.slice(startIndex, endIndex);
-
-        if (state.page === 1) {
-          state.items = pageItems;
+        if (page === 1) {
+          state.items = items;
         } else {
-          // Filter out duplicates based on ID
           const existingIds = new Set(state.items.map((item) => item.id));
-          const uniqueNewItems = pageItems.filter(
+          const uniqueNewItems = items.filter(
             (item) => !existingIds.has(item.id)
           );
           state.items = [...state.items, ...uniqueNewItems];
         }
 
         state.total = total;
-        state.hasMore = endIndex < total;
+        state.hasMore = state.items.length < total;
       })
       .addCase(fetchCampers.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
+        if (state.page === 1) {
+          state.items = [];
+        }
       })
       .addCase(fetchCamperById.pending, (state) => {
         state.isLoading = true;

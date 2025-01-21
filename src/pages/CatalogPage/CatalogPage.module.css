@@ -26,6 +26,7 @@
   max-width: 888px;
   width: 100%;
   gap: 32px;
+  list-style-type: none;
 }
 
 .loadMoreButton {
@@ -50,7 +51,7 @@
   border-color: var(--button-hover);
 }
 
-.loading, .noResults, .error {
+.loading, .noResults, .noCampers, .error {
   display: flex;
   justify-content: center;
   min-width: 760px;

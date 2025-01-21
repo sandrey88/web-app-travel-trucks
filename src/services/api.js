@@ -15,7 +15,7 @@ export const getCampers = async (params = {}) => {
     // The API returns { total: number, items: array }
     return {
       items: response.data.items || [],
-      total: response.data.total || 0
+      total: response.data.total || 0,
     };
   } catch (error) {
     console.error("API Error:", error);
