@@ -43,7 +43,28 @@ export const fetchCampers = createAsyncThunk(
   "campers/fetchCampers",
   async ({ page = 1 } = {}, { getState }) => {
     try {
-      const filters = getState().filters;
+      const state = getState();
+      const filters = state.filters;
+      let allTransformedItems = [];
+      
+      // Only fetch from API on first page or if we don't have items
+      if (page === 1 || state.campers.allItems.length === 0) {
+        // Get all campers first
+        const response = await getCampers({
+          page: 1,
+          limit: 100, // Get more items to allow for filtering
+        });
+
+        if (!response || !Array.isArray(response.items)) {
+          throw new Error("Invalid response format from API");
+        }
+
+        // Transform all items
+        allTransformedItems = response.items.map(transformCamperForCatalog);
+      } else {
+        // Use stored items for subsequent pages
+        allTransformedItems = state.campers.allItems;
+      }
       
       // Prepare filters
       const activeFilters = {};
@@ -65,47 +86,42 @@ export const fetchCampers = createAsyncThunk(
           activeFilters[key] = true;
         });
 
-      // Get all campers first
-      const response = await getCampers({
-        page,
-        limit: 8,
-      });
+      // Apply filters
+      let filteredItems = allTransformedItems.filter(camper => {
+        // Filter by location if specified
+        if (activeFilters.location && 
+            !camper.location?.toLowerCase().includes(activeFilters.location.toLowerCase())) {
+          return false;
+        }
 
-      if (!response || !Array.isArray(response.items)) {
-        throw new Error("Invalid response format from API");
-      }
+        // Filter by vehicle type if specified
+        if (activeFilters.type && camper.type !== activeFilters.type) {
+          return false;
+        }
 
-      // Transform and filter campers locally
-      let filteredItems = response.items
-        .map(transformCamperForCatalog)
-        .filter(camper => {
-          // Filter by location if specified
-          if (activeFilters.location && 
-              !camper.location?.toLowerCase().includes(activeFilters.location.toLowerCase())) {
-            return false;
-          }
-
-          // Filter by vehicle type if specified
-          if (activeFilters.type && camper.type !== activeFilters.type) {
-            return false;
-          }
-
-          // Filter by features
-          for (const [feature, isRequired] of Object.entries(activeFilters)) {
-            if (isRequired && feature !== 'location' && feature !== 'type') {
-              if (!camper.features[feature]) {
-                return false;
-              }
+        // Filter by features
+        for (const [feature, isRequired] of Object.entries(activeFilters)) {
+          if (isRequired && feature !== 'location' && feature !== 'type') {
+            if (!camper.features[feature]) {
+              return false;
             }
           }
+        }
 
-          return true;
-        });
+        return true;
+      });
+
+      // Calculate pagination
+      const itemsPerPage = 8;
+      const startIndex = (page - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const paginatedItems = filteredItems.slice(startIndex, endIndex);
 
       return {
-        items: filteredItems,
+        items: paginatedItems,
         total: filteredItems.length,
         page,
+        allItems: filteredItems,
       };
     } catch (error) {
       console.error("API Error:", error);
@@ -132,6 +148,7 @@ export const fetchCamperById = createAsyncThunk(
 
 const initialState = {
   items: [],
+  allItems: [], // Store all fetched items
   selectedCamper: null,
   isLoading: false,
   error: null,
@@ -146,6 +163,7 @@ const campersSlice = createSlice({
   reducers: {
     clearCampers: (state) => {
       state.items = [];
+      state.allItems = [];
       state.page = 1;
       state.hasMore = true;
       state.error = null;
@@ -169,16 +187,14 @@ const campersSlice = createSlice({
         state.isLoading = false;
         state.error = null;
 
-        const { items, total, page } = action.payload;
+        const { items, total, page, allItems } = action.payload;
 
         if (page === 1) {
           state.items = items;
+          state.allItems = allItems; // Store all items on first load
         } else {
-          const existingIds = new Set(state.items.map((item) => item.id));
-          const uniqueNewItems = items.filter(
-            (item) => !existingIds.has(item.id)
-          );
-          state.items = [...state.items, ...uniqueNewItems];
+          // Append new items to existing ones
+          state.items = [...state.items, ...items];
         }
 
         state.total = total;
@@ -189,6 +205,7 @@ const campersSlice = createSlice({
         state.error = action.error.message;
         if (state.page === 1) {
           state.items = [];
+          state.allItems = [];
         }
       })
       .addCase(fetchCamperById.pending, (state) => {

@@ -4,7 +4,6 @@ import styles from './Reviews.module.css';
 const Reviews = ({ reviews }) => {
   const [showAll, setShowAll] = useState(false);
 
-  // Перевірка на масив
   const displayedReviews = Array.isArray(reviews) ? (showAll ? reviews : reviews.slice(0, 3)) : [];
 
   if (displayedReviews.length === 0) {
