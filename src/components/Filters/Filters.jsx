@@ -19,6 +19,7 @@ const Filters = () => {
   const [locationSuggestions, setLocationSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchText, setSearchText] = useState('');
   const searchTimeout = useRef(null);
   const inputRef = useRef(null);
   const suggestionsRef = useRef(null);
@@ -41,8 +42,8 @@ const Filters = () => {
     };
   }, []);
 
-  const fetchLocationSuggestions = async (searchText) => {
-    if (!searchText || searchText.length < 2) {
+  const fetchLocationSuggestions = async (text) => {
+    if (!text || text.length < 2) {
       setLocationSuggestions([]);
       setShowSuggestions(false);
       return;
@@ -52,7 +53,7 @@ const Filters = () => {
     try {
       const response = await getCampers();
       const locations = [...new Set(response.items.map(camper => camper.location))];
-      const searchLower = searchText.toLowerCase();
+      const searchLower = text.toLowerCase();
 
       const filteredLocations = locations.filter(loc => {
         if (!loc) return false;
@@ -60,11 +61,11 @@ const Filters = () => {
       });
 
       setLocationSuggestions(filteredLocations);
-      setShowSuggestions(filteredLocations.length > 0);
+      setShowSuggestions(true); // Always show suggestions box, even if empty
     } catch (error) {
       console.error('Error fetching locations:', error);
       setLocationSuggestions([]);
-      setShowSuggestions(false);
+      setShowSuggestions(true); // Show suggestions box to display "No matches found"
     } finally {
       setIsLoading(false);
     }
@@ -72,8 +73,8 @@ const Filters = () => {
 
   const handleLocationChange = (e) => {
     const value = e.target.value;
-    dispatch(setLocation(value));
-
+    setSearchText(value); // Update local search text
+    
     if (searchTimeout.current) {
       clearTimeout(searchTimeout.current);
     }
@@ -84,7 +85,8 @@ const Filters = () => {
   };
 
   const handleLocationSelect = (location) => {
-    dispatch(setLocation(location));
+    setSearchText(location); // Update local search text
+    dispatch(setLocation(location)); // Update Redux state only when location is selected
     setShowSuggestions(false);
   };
 
@@ -98,6 +100,7 @@ const Filters = () => {
   };
 
   const handleSearch = () => {
+    dispatch(setLocation(searchText)); // Update Redux location state when Search is clicked
     dispatch(resetPagination());
     dispatch(clearCampers());
     dispatch(fetchCampers());
@@ -114,7 +117,7 @@ const Filters = () => {
           <input
             type="text"
             placeholder="City"
-            value={filters.location}
+            value={searchText} // Use local state for input value
             onChange={handleLocationChange}
             className={styles.searchInput}
           />

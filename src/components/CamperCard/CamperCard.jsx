@@ -38,22 +38,20 @@ const CamperCard = ({ camper }) => {
             e.target.src = '../../images/fallback-image.svg';
           }}
         />
-        <button 
-          className={`${styles.favoriteButton} ${isFavorite ? styles.active : ''}`} 
-          onClick={handleFavoriteClick}
-          aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-        >
-          <svg className={styles.favoriteIcon}>
-            <use href={`${sprite}#icon-heart`} />
-          </svg>
-        </button>
       </div>
 
       <div className={styles.content}>
         <div className={styles.header}>
           <div className={styles.titleRow}>
             <h2 className={styles.title}>{camper.name}</h2>
-            <p className={styles.price}>{formatPrice(camper.price)}</p>
+            <div className={styles.priceAndFavorite}>
+              <p className={styles.price}>{formatPrice(camper.price)}</p>
+              <button className={`${styles.favoriteButton} ${isFavorite ? styles.active : ''}`} onClick={handleFavoriteClick} aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}>
+                <svg className={styles.favoriteIcon}>
+                  <use href={`${sprite}#icon-heart`} />
+                </svg>
+              </button>
+            </div>
           </div>
           <div className={styles.reviewsAndLocation}>
             <div className={styles.reviews}>

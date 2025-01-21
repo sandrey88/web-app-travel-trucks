@@ -1,4 +1,8 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  createAsyncThunk,
+  createSelector,
+} from "@reduxjs/toolkit";
 import { getCampers, getCamperById } from "../../services/api";
 
 // Transform camper data for catalog display
@@ -26,6 +30,7 @@ const transformCamperForCatalog = (camper) => ({
     gas: camper.gas || false,
     water: camper.water || false,
   },
+  type: camper.type || "",
   form: camper.form,
   length: camper.length,
   width: camper.width,
@@ -169,11 +174,32 @@ export const { clearCampers, setPage, resetPagination } = campersSlice.actions;
 export const campersReducer = campersSlice.reducer;
 
 // Memoized selectors
-export const selectCampers = (state) => state.campers.items;
-export const selectPagination = (state) => ({
-  page: state.campers.page,
-  total: state.campers.total,
-});
-export const selectHasMore = (state) => state.campers.hasMore;
-export const selectIsLoading = (state) => state.campers.isLoading;
-export const selectError = (state) => state.campers.error;
+const selectCampersState = (state) => state.campers;
+
+export const selectCampers = createSelector(
+  [selectCampersState],
+  (campersState) => campersState.items
+);
+
+export const selectPagination = createSelector(
+  [selectCampersState],
+  (campersState) => ({
+    page: campersState.page,
+    total: campersState.total,
+  })
+);
+
+export const selectHasMore = createSelector(
+  [selectCampersState],
+  (campersState) => campersState.hasMore
+);
+
+export const selectIsLoading = createSelector(
+  [selectCampersState],
+  (campersState) => campersState.isLoading
+);
+
+export const selectError = createSelector(
+  [selectCampersState],
+  (campersState) => campersState.error
+);

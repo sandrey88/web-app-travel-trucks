@@ -1,9 +1,11 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  location: '',
-  vehicleType: '',
+  location: "",
+  vehicleType: "",
   features: {
+    AC: false,
+    automatic: false,
     bathroom: false,
     kitchen: false,
     TV: false,
@@ -11,12 +13,12 @@ const initialState = {
     refrigerator: false,
     microwave: false,
     gas: false,
-    water: false
+    water: false,
   },
 };
 
 const filtersSlice = createSlice({
-  name: 'filters',
+  name: "filters",
   initialState,
   reducers: {
     setLocation: (state, action) => {
@@ -33,5 +35,6 @@ const filtersSlice = createSlice({
   },
 });
 
-export const { setLocation, setVehicleType, toggleFeature, resetFilters } = filtersSlice.actions;
+export const { setLocation, setVehicleType, toggleFeature, resetFilters } =
+  filtersSlice.actions;
 export const filtersReducer = filtersSlice.reducer;
